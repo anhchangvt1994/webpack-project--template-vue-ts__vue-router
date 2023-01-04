@@ -36,6 +36,7 @@ module.exports = async (env, arg) => {
 		externalsType: WebpackConfigWithMode.externalsType || 'var',
 		externals: WebpackConfigWithMode.externals || {},
 		resolve: {
+			preferRelative: true,
 			alias: {
 				...(resolveTsconfigPathsToAlias(
 					path.resolve(PROJECT_PATH, 'tsconfig.json')
@@ -72,16 +73,17 @@ module.exports = async (env, arg) => {
 						{
 							loader: 'sass-loader',
 							options: {
-								additionalData: '@import "assets/styles/main.scss";',
+								additionalData: '@import "main.scss";',
 								sassOptions: {
 									hmr: true,
 									includePaths: [
 										'node_modules',
-										'assets',
-										'assets/styles',
-										'assets/fonts',
-										'assets/images',
-										'assets/videos',
+										'src/assets',
+										'src/assets/styles',
+										'src/assets/fonts',
+										'src/assets/images',
+										'src/assets/videos',
+										'src/assets/styles/layout',
 									],
 									sourceMap: arg.mode === 'development',
 									warnRuleAsWarning: true,
@@ -121,7 +123,14 @@ module.exports = async (env, arg) => {
 				imports: [
 					// presets
 					'vue',
-					'vue-router',
+					{
+						'vue-router': [
+							'createRouter',
+							'createWebHistory',
+							'useRoute',
+							'useRouter',
+						],
+					},
 				],
 				eslintrc: {
 					enabled: true,

@@ -47,7 +47,11 @@
 				"alias": {
 					"@": "./",
 					"js": "./src",
-					"assets": "./src/assets"
+					"assets": "./src/assets",
+					"pages": "./src/pages",
+					"components": "./src/components",
+					"config": "./src/config",
+					"utils": "./src/utils"
 				},
 				"extensions": [".js", ".jsx", ".vue", ".ts", ".tsx"]
 			}

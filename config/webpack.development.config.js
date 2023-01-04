@@ -50,10 +50,10 @@ const WebpackDevelopmentConfiguration = async () => {
 			vue: 'module https://esm.sh/vue@3.2.45?dev',
 			'vue-router': 'module https://esm.sh/vue-router@4.1.6?dev',
 		},
-		devtool: 'inline-source-map', // NOTE - BAD Performance, GOOD debugging
+		// devtool: 'inline-source-map', // NOTE - BAD Performance, GOOD debugging
 		// devtool: 'eval-cheap-module-source-map', // NOTE - SLOW Performance, GOOD debugging
 		// devtool: 'eval', // NOTE - GOOD Performance, BAD debugging
-		// devtool: 'eval-cheap-source-map',
+		devtool: 'eval-cheap-source-map',
 		devServer: {
 			compress: true,
 			port,
@@ -63,6 +63,7 @@ const WebpackDevelopmentConfiguration = async () => {
 			liveReload: false,
 			host: process.env.PROJECT_IPV4_HOST,
 			devMiddleware: { publicPath: '/', writeToDisk: true },
+			historyApiFallback: true,
 		},
 		module: {
 			rules: [
@@ -173,13 +174,13 @@ const WebpackDevelopmentConfiguration = async () => {
 
 		cache: {
 			// NOTE - Type memory
-			type: 'memory',
-			cacheUnaffected: true,
-			maxGenerations: Infinity,
+			// type: 'memory',
+			// cacheUnaffected: true,
+			// maxGenerations: Infinity,
 
 			// NOTE - Type filesystem
-			// type: 'filesystem',
-			// compression: 'gzip',
+			type: 'filesystem',
+			compression: 'gzip',
 		},
 
 		// NOTE - We need get single runtime chunk to ignore issue hot module replacement after changing a file
@@ -211,13 +212,40 @@ const WebpackDevelopmentConfiguration = async () => {
 						// minSizeReduction: 500,
 					},
 					vendors: {
-						chunks: 'all',
+						chunks: 'async',
 						test: /[\\/]node_modules[\\/]/,
 						name: 'vendors',
 						reuseExistingChunk: true,
 						// minSize: 30000,
 						// maxSize: 200000,
 						enforce: true,
+					},
+					utils: {
+						chunks: 'async',
+						test: /[\\/]utils[\\/]/,
+						name: 'utils',
+						reuseExistingChunk: true,
+						minSize: 10000,
+						maxSize: 100000,
+						// enforce: true,
+					},
+					config: {
+						chunks: 'async',
+						test: /[\\/]config[\\/]/,
+						name: 'config',
+						reuseExistingChunk: true,
+						minSize: 10000,
+						maxSize: 100000,
+						// enforce: true,
+					},
+					components: {
+						chunks: 'async',
+						test: /[\\/]components[\\/]/,
+						name: 'components',
+						reuseExistingChunk: true,
+						minSize: 10000,
+						maxSize: 100000,
+						// enforce: true,
 					},
 				},
 			},
