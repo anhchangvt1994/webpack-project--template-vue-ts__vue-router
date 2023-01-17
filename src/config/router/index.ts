@@ -46,6 +46,7 @@ const routes: Readonly<RouteRecordRaw[]> = [
 const router = createRouter({
 	history: createWebHistory(import.meta.env.ROUTER_BASE_PATH),
 	routes,
+	sensitive: true,
 })
 
 export default router

@@ -31,10 +31,10 @@
 		&.--is-error {
 			background: url('assets/images/icons/image-loading-icon.png') center/24px
 				24px no-repeat;
-		}
 
-		.image-item {
-			display: none;
+			.image-item {
+				display: none;
+			}
 		}
 	}
 

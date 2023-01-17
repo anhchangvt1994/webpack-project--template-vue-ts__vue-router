@@ -1,4 +1,3 @@
-const path = require('path')
 const { DefinePlugin } = require('webpack')
 const TerserPlugin = require('terser-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -58,12 +57,11 @@ module.exports = (async () => {
 					},
 				},
 			],
-			noParse: /vue/,
 		},
 		plugins: [
 			new HtmlWebpackPlugin({
 				title: 'webpack project for vue',
-				template: 'index.html',
+				template: 'index.production.html',
 				inject: 'body',
 				templateParameters: {
 					env: process.env.ENV,
