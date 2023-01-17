@@ -211,7 +211,7 @@ const WebpackDevelopmentConfiguration = async () => {
 						// minSizeReduction: 500,
 					},
 					vendors: {
-						chunks: 'async',
+						chunks: 'all',
 						test: /[\\/]node_modules[\\/]/,
 						name: 'vendors',
 						reuseExistingChunk: true,

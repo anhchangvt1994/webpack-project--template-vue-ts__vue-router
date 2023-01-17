@@ -3,6 +3,8 @@
 
 	"path-autocomplete.extensionOnImport": true,
 	"path-autocomplete.includeExtension": true,
+	"path-autocomplete.disableUpOneFolder": false,
+	"path-autocomplete.enableFolderTrailingSlash": false,
 	"path-autocomplete.excludedItems": {
 		"**": { "when": "**/*.{js,ts,vue}", "isDir": true }
 	},
@@ -11,5 +13,10 @@
 		"assets": "${workspace}/src/assets"
 	},
 	"path-autocomplete.pathSeparators": " \t({[",
-	"editor.suggest.showModules": false
+	"editor.suggest.showModules": false,
+	"editor.codeActionsOnSave": [
+		"source.formatDocument",
+		"source.fixAll.tslint",
+		"source.fixAll.eslint"
+	]
 }
