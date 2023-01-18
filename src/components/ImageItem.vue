@@ -28,6 +28,7 @@
 	.image-item__outer {
 		height: 100px;
 		width: 100%;
+
 		&.--is-error {
 			background: url('assets/images/icons/image-loading-icon.png') center/24px
 				24px no-repeat;

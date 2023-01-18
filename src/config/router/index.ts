@@ -1,14 +1,14 @@
 import type { RouteRecordRaw } from 'vue-router'
 import LazyRoute from 'utils/LazyRoute'
-import PageLoader from 'src/components/PageLoader.vue'
-import Error from 'src/components/Error.vue'
+import PageLoader from 'components/PageLoader.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 const lazyPage = LazyRoute.init({
 	suspensible: false,
 	loadingComponent: PageLoader,
-	errorComponent: Error,
+	errorComponent: ErrorComponent,
 	delay: 100,
-	onError(error, retry, fail, attempts) {
+	onError(error, retry, fail) {
 		fail()
 	},
 })

@@ -40,18 +40,14 @@ module.exports = {
 				endOfLine: 'auto',
 			},
 		],
+		// NOTE - This options settup for stop linting alias
+		// "import/no-unresolved": [0, { }]
 	},
 	settings: {
 		'import/resolver': {
 			'eslint-import-resolver-custom-alias': {
 				alias: {
-					'@': './',
-					js: './src',
-					assets: './src/assets',
-					pages: './src/pages',
-					components: './src/components',
-					config: './src/config',
-					utils: './src/utils',
+					'': './src',
 				},
 				extensions: ['.js', '.jsx', '.vue', '.ts', '.tsx'],
 			},
