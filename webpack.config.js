@@ -1,9 +1,9 @@
-/** @type {import('tailwindcss').Config} */
 const path = require('path')
 const fs = require('fs')
 const { VueLoaderPlugin } = require('vue-loader')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 
 const PROJECT_PATH = __dirname.replace(/\\/g, '/')
 
@@ -29,10 +29,11 @@ module.exports = async (env, arg) => {
 		output: {
 			globalObject: 'globalThis',
 			filename: '[contenthash:8].js',
-			assetModuleFilename:
-				arg.mode === 'production'
-					? '[contenthash:8][ext]'
-					: 'assets/[contenthash:8][ext]',
+			// assetModuleFilename:
+			// 	arg.mode === 'production'
+			// 		? '[contenthash:8][ext]'
+			// 		: 'assets/[contenthash:8][ext]',
+			assetModuleFilename: '[file]',
 			path: path.resolve(__dirname, 'dist'),
 			...(WebpackConfigWithMode.output || {}),
 		},
@@ -72,6 +73,9 @@ module.exports = async (env, arg) => {
 						},
 						{
 							loader: 'css-loader',
+							options: {
+								url: false,
+							},
 						},
 						{
 							loader: 'postcss-loader',
@@ -109,9 +113,13 @@ module.exports = async (env, arg) => {
 						},
 					],
 				},
+				// NOTE - This config to resolve asset's paths
 				{
 					test: /\.(png|jpe?g|gif|webm|mp4|svg|ico|tff|eot|otf|woff|woff2)$/,
 					type: 'asset/resource',
+					generator: {
+						emit: false,
+					},
 					exclude: [/node_modules/],
 				},
 				...(WebpackConfigWithMode?.module?.rules ?? []),
@@ -119,6 +127,23 @@ module.exports = async (env, arg) => {
 		},
 		plugins: [
 			new CleanWebpackPlugin(),
+			new CopyPlugin({
+				patterns: [
+					{
+						from: './src/assets/static',
+						filter: (resourcePath) => {
+							if (
+								arg.mode === 'production' &&
+								resourcePath.indexOf('images/development') !== -1
+							) {
+								return false
+							}
+
+							return true
+						},
+					},
+				],
+			}),
 			new MiniCssExtractPlugin({
 				filename:
 					arg.mode === 'development'
@@ -157,6 +182,7 @@ module.exports = async (env, arg) => {
 			}),
 			...(WebpackConfigWithMode.plugins || []),
 		],
+		stats: WebpackConfigWithMode.stats || 'detailed',
 		cache: WebpackConfigWithMode.cache || true,
 		optimization: WebpackConfigWithMode.optimization || {},
 		experiments: WebpackConfigWithMode.experiments || {},

@@ -30,8 +30,8 @@
 		width: 100%;
 
 		&.--is-error {
-			background: url('assets/images/icons/image-loading-icon.png') center/24px
-				24px no-repeat;
+			background: url('/images/icons/image-loading-icon.png') center/24px 24px
+				no-repeat;
 
 			.image-item {
 				display: none;

@@ -1,3 +1,4 @@
+const path = require('path')
 const fs = require('fs')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -38,17 +39,10 @@ const WebpackDevelopmentConfiguration = async () => {
 		output: {
 			publicPath: '/',
 			module: true,
-			// library: { type: 'module' },
 			environment: {
-				// module: true,
 				dynamicImport: true,
 			},
 			scriptType: 'module',
-		},
-		// externalsType: 'module',
-		externals: {
-			vue: 'module https://esm.sh/vue@3.2.45?dev',
-			'vue-router': 'module https://esm.sh/vue-router@4.1.6?dev',
 		},
 		// devtool: 'inline-source-map', // NOTE - BAD Performance, GOOD debugging
 		// devtool: 'eval-cheap-module-source-map', // NOTE - SLOW Performance, GOOD debugging
@@ -67,21 +61,34 @@ const WebpackDevelopmentConfiguration = async () => {
 		},
 		module: {
 			rules: [
-				// NOTE - Option 2
+				{
+					test: /.(jsx|tsx|js|ts)$/,
+					exclude: /(node_modules)/,
+					use: {
+						loader: 'swc-loader',
+						options: {
+							jsc: {
+								parser: {
+									syntax: 'typescript',
+									tsx: true,
+									decorators: false,
+									dynamicImport: true,
+								},
+								target: 'esnext',
+							},
+						},
+					},
+				},
 				// {
-				//   test: /.(js|ts)$/,
-				//   exclude: /(node_modules)/,
-				//   use: {
-				//     loader: "swc-loader",
-				//     options: {
-				//       jsc: {
-				//         parser: {
-				//           syntax: "typescript",
-				//           decorators: true,
-				//         },
-				//       },
-				//     },
-				//   },
+				// 	test: /\.(js|ts)$/,
+				// 	use: {
+				// 		loader: 'esbuild-loader',
+				// 		options: {
+				// 			loader: 'ts',
+				// 			target: 'esnext',
+				// 		},
+				// 	},
+				// 	exclude: /node_modules/,
 				// },
 				{
 					test: /libs[\\/]socket.io.min.js/,
@@ -90,18 +97,6 @@ const WebpackDevelopmentConfiguration = async () => {
 						filename: '[name][ext]',
 					},
 					exclude: [/node_modules/],
-				},
-				// NOTE - Option 1 (popular)
-				{
-					test: /\.(js|ts)$/,
-					use: {
-						loader: 'esbuild-loader',
-						options: {
-							loader: 'ts',
-							target: 'esnext',
-						},
-					},
-					exclude: /node_modules/,
 				},
 			],
 		},
@@ -118,7 +113,6 @@ const WebpackDevelopmentConfiguration = async () => {
 					__VUE_OPTIONS_API__: true,
 					__VUE_PROD_DEVTOOLS__: false,
 				},
-				// excludeChunks: ["socket.io-client"],
 			}),
 			new WebpackCustomizeDefinePlugin({
 				'import.meta.env': WebpackCustomizeDefinePlugin.RuntimeUpdateValue(
@@ -155,7 +149,7 @@ const WebpackDevelopmentConfiguration = async () => {
 						})
 					},
 					{
-						fileDependencies: `${PROJECT_PATH}/env/.env`,
+						fileDependencies: path.resolve(__dirname, './env/.env'),
 					}
 				),
 			}),
@@ -171,6 +165,11 @@ const WebpackDevelopmentConfiguration = async () => {
 				_socket.emit('updateProgressPercentage', Math.ceil(percentage * 100))
 			}),
 		].filter(Boolean),
+
+		stats: {
+			preset: 'errors-only',
+			all: false,
+		},
 
 		cache: {
 			// NOTE - Type memory
@@ -191,33 +190,11 @@ const WebpackDevelopmentConfiguration = async () => {
 				minSize: 0,
 				cacheGroups: {
 					default: false,
-					styles: {
-						// NOTE - For mini-css-extract
-						// chunks: 'all',
-						// name: 'bundle',
-						// type: 'css/mini-extract',
-						// priority: 100,
-						// minSize: 0,
-						// maxSize: 500,
-						// minSizeReduction: 500,
-						// enforce: true,
-						// NOTE - For style-loader
-						// name: 'bundle',
-						// test: /\.((c|sa|sc)ss)$/i,
-						// chunks: 'all',
-						// priority: 100,
-						// enforce: true,
-						// minSize: 0,
-						// maxSize: 500,
-						// minSizeReduction: 500,
-					},
 					vendors: {
 						chunks: 'all',
 						test: /[\\/]node_modules[\\/]/,
 						name: 'vendors',
 						reuseExistingChunk: true,
-						// minSize: 30000,
-						// maxSize: 200000,
 						enforce: true,
 					},
 					utils: {
@@ -225,27 +202,14 @@ const WebpackDevelopmentConfiguration = async () => {
 						test: /[\\/]utils[\\/]/,
 						name: 'utils',
 						reuseExistingChunk: true,
-						minSize: 10000,
-						maxSize: 100000,
-						// enforce: true,
+						enforce: true,
 					},
 					config: {
 						chunks: 'async',
 						test: /[\\/]config[\\/]/,
 						name: 'config',
 						reuseExistingChunk: true,
-						minSize: 10000,
-						maxSize: 100000,
-						// enforce: true,
-					},
-					components: {
-						chunks: 'async',
-						test: /[\\/]components[\\/]/,
-						name: 'components',
-						reuseExistingChunk: true,
-						minSize: 10000,
-						maxSize: 100000,
-						// enforce: true,
+						enforce: true,
 					},
 				},
 			},
