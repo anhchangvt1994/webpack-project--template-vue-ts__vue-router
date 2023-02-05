@@ -27,12 +27,9 @@ module.exports = async (env, arg) => {
 			...(WebpackConfigWithMode.entry || {}),
 		},
 		output: {
+			pathinfo: false,
 			globalObject: 'globalThis',
 			filename: '[contenthash:8].js',
-			// assetModuleFilename:
-			// 	arg.mode === 'production'
-			// 		? '[contenthash:8][ext]'
-			// 		: 'assets/[contenthash:8][ext]',
 			assetModuleFilename: '[file]',
 			path: path.resolve(__dirname, 'dist'),
 			...(WebpackConfigWithMode.output || {}),
@@ -124,6 +121,8 @@ module.exports = async (env, arg) => {
 				},
 				...(WebpackConfigWithMode?.module?.rules ?? []),
 			],
+			unsafeCache: true,
+			noParse: /[\\/]src\/assets\/static[\\/]|libs[\\/]socket.io.min.js/,
 		},
 		plugins: [
 			new CleanWebpackPlugin(),
@@ -145,13 +144,10 @@ module.exports = async (env, arg) => {
 				],
 			}),
 			new MiniCssExtractPlugin({
-				filename:
-					arg.mode === 'development'
-						? '[id].css'
-						: '[name].[contenthash:8].css',
-				chunkFilename:
-					arg.mode === 'development' ? '[id].css' : '[id].[contenthash:8].css',
+				filename: '[name].[contenthash:8].css',
+				chunkFilename: '[id].[contenthash:8].css',
 				ignoreOrder: false,
+				experimentalUseImportModule: true,
 			}),
 			new VueLoaderPlugin(),
 			require('unplugin-auto-import/webpack')({

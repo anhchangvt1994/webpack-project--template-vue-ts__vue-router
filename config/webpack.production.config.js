@@ -1,7 +1,9 @@
+const glob = require('glob')
 const { DefinePlugin } = require('webpack')
 const TerserPlugin = require('terser-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const { PurgeCSSPlugin } = require('purgecss-webpack-plugin')
 
 module.exports = (async () => {
 	const { ENV_OBJ_WITH_JSON_STRINGIFY_VALUE } = await import('./env/env.mjs')
@@ -57,6 +59,9 @@ module.exports = (async () => {
 			],
 		},
 		plugins: [
+			new PurgeCSSPlugin({
+				paths: glob.sync(`./src/**/*`, { nodir: true }),
+			}),
 			new HtmlWebpackPlugin({
 				title: 'webpack project for vue',
 				template: 'index.production.html',
@@ -89,6 +94,8 @@ module.exports = (async () => {
 		},
 		cache: {
 			type: 'filesystem',
+			allowCollectingMemory: true,
+			memoryCacheUnaffected: true,
 			compression: 'gzip',
 		},
 		performance: {
@@ -174,6 +181,10 @@ module.exports = (async () => {
 						outputModule: true,
 					},
 			  }
-			: {}),
+			: {
+					experiments: {
+						cacheUnaffected: true,
+					},
+			  }),
 	}
 })()
