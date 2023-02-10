@@ -10,15 +10,19 @@ export default {
 		},
 		content: {
 			name: 'ContentPage',
-			path: '/:title-:id(\\d+)',
+			path: '/:title?-:id(\\d+)?',
 		},
-		comment_page: {
-			name: 'CommentPage',
+		content_comment: {
+			name: 'ContentComment',
 			path: 'comment',
 		},
-		detail: {
-			name: 'DetailPage',
-			path: 'detail',
+		comment: {
+			name: 'CommentPage',
+			path: 'comment/detail',
+		},
+		login: {
+			name: 'LoginPage',
+			path: '/login',
 		},
 		not_found: {
 			name: 'NotFoundPage',

@@ -175,7 +175,7 @@ const WebpackDevelopmentConfiguration = async () => {
 		},
 
 		optimization: {
-			runtimeChunk: false,
+			runtimeChunk: true,
 			removeAvailableModules: false,
 			removeEmptyChunks: false,
 			splitChunks: false,

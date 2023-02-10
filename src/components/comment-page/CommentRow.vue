@@ -1,12 +1,22 @@
 <script setup lang="ts">
 	import ImageItem from 'components/ImageItem.vue'
+
+	const route = useRoute()
+
+	const commentPageName = import.meta.env.ROUTER_COMMENT_NAME
+
+	const props = defineProps<{
+		total?: number
+	}>()
+
 	await new Promise((res) => {
+		const duration = Math.floor(Math.random() * 10) * 100
 		setTimeout(function () {
 			res('OK')
-		}, 2000)
+		}, duration)
 	})
 
-	const amount = Math.floor(Math.random() * 4) + 1
+	const amount = props.total || Math.floor(Math.random() * 4) + 1
 </script>
 
 <template>
@@ -27,6 +37,15 @@
 			</div>
 		</div>
 	</div>
+
+	<router-link
+		v-if="route.name !== commentPageName"
+		:to="{
+			name: commentPageName,
+			params: route.params,
+		}"
+		>See more</router-link
+	>
 	<!-- .comment-loader-row -->
 </template>
 
