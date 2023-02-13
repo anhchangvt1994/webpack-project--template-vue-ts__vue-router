@@ -412,4 +412,10 @@ const onClickLogout = () => {
 Finish him! Easy to finish the extensibility requirement, jsut only 1 line of code.
 
 **NOTE**
-Makesure your protect function is a **Pure Function**, it make your result will always right.
+
+- Makesure your protect function is a **Pure Function**, it make your result will always right.
+- You can customize or implement your logic to handle protect case by using
+
+1. **shim-vue.d.ts** to declare type for **meta field**
+2. **config/router/utils/BeforeEachHandler.ts** to customize or implement logic.
+3. **config/router/index.ts** to init your handler.
