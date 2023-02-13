@@ -12,6 +12,14 @@
 
 <template>
 	<div class="login-page">
+		<div>
+			<router-link
+				:to="{
+					name: 'HomePage',
+				}"
+				>Back to HomePage</router-link
+			>
+		</div>
 		<section class="login-section">
 			<div class="login-block">
 				<div class="login-avatar">

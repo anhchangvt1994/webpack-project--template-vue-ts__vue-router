@@ -17,7 +17,7 @@
 								@click="
 									() => {
 										UserInfoState.email = ''
-										$route.meta.reProtect()
+										$route.meta.reProtect?.()
 									}
 								"
 								>Logout</span

@@ -57,7 +57,7 @@ const WebpackDevelopmentConfiguration = async () => {
 			client: {
 				overlay: false,
 				logging: 'warn', // Want to set this to 'warn' or 'error'
-			}, // NOTE - Use overlay of react refresh plugin
+			},
 			devMiddleware: { publicPath: '/', writeToDisk: true },
 			historyApiFallback: true,
 		},
@@ -187,7 +187,14 @@ const WebpackDevelopmentConfiguration = async () => {
 			providedExports: false,
 		},
 		experiments: {
-			lazyCompilation: true,
+			lazyCompilation: {
+				imports: true,
+				entries: true,
+				test: (module) =>
+					!/[\\/](node_modules|src\/(utils|config|assets))[\\/]/.test(
+						module.nameForCondition()
+					),
+			},
 			layers: true,
 			cacheUnaffected: true,
 		},

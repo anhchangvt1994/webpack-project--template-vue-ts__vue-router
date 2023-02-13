@@ -73,22 +73,16 @@ const BeforeEach = (function beforeEach() {
 				return false
 			}
 
-			if (successID) {
-				if (
-					WAITING_VERIFY_ROUTER_NAME_LIST[successID].includes(to.name as string)
-				) {
-					to.meta.info = {
-						successPath,
-					}
-				} else {
-					successID = ''
-					successPath = ''
-				}
-			}
+			to.meta.reProtect = () => _protectHandler({ router, to, from })
 		}
 
-		to.meta.successPath = successPath
-		to.meta.reProtect = () => _protectHandler({ router, to, from })
+		if (
+			successID &&
+			!WAITING_VERIFY_ROUTER_NAME_LIST[successID].includes(to.name as string)
+		) {
+			successID = ''
+			successPath = ''
+		}
 	} // _protectHandler()
 
 	const _init = (router: Router) => {

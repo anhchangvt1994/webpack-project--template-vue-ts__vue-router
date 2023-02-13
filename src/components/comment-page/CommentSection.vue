@@ -4,16 +4,16 @@
 
 <template>
 	<Transition mode="out-in">
-		<KeepAlive>
-			<section class="comment-section">
-				<Suspense>
-					<slot></slot>
-					<template #fallback>
-						<CommentLoader :amount="3" :delay="120" />
-					</template>
-				</Suspense>
-			</section>
-		</KeepAlive>
+		<!-- <KeepAlive> -->
+		<section class="comment-section">
+			<Suspense>
+				<slot></slot>
+				<template #fallback>
+					<CommentLoader :amount="3" :delay="120" />
+				</template>
+			</Suspense>
+		</section>
+		<!-- </KeepAlive> -->
 	</Transition>
 </template>
 

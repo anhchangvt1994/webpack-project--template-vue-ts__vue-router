@@ -31,7 +31,7 @@ const routes: Readonly<RouteRecordRaw[]> = [
 					{
 						name: import.meta.env.ROUTER_CONTENT_NAME,
 						path: import.meta.env.ROUTER_CONTENT_PATH,
-						component: lazyPage(() => import('pages/ContentPageold.vue')),
+						component: lazyPage(() => import('pages/ContentPage.vue')),
 						props: true,
 
 						children: [
