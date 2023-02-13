@@ -405,7 +405,7 @@ I think you have already known what need to do. Correct! just use **reProtect()*
 const route = useRoute()
 const onClickLogout = () => {
 	userInfo.email = ''
-	route.meta?.reProtect()
+	route.meta.reProtect?.()
 }
 ```
 
