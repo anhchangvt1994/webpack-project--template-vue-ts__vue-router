@@ -144,8 +144,12 @@ module.exports = async (env, arg) => {
 				],
 			}),
 			new MiniCssExtractPlugin({
-				filename: '[name].[contenthash:8].css',
-				chunkFilename: '[id].[contenthash:8].css',
+				filename:
+					arg.mode === 'development'
+						? '[id].css'
+						: '[name].[contenthash:8].css',
+				chunkFilename:
+					arg.mode === 'development' ? '[id].css' : '[id].[contenthash:8].css',
 				ignoreOrder: false,
 				experimentalUseImportModule: true,
 			}),

@@ -144,6 +144,15 @@ module.exports = (async () => {
 						maxSize: 100000,
 						// enforce: true,
 					},
+					store: {
+						chunks: 'all',
+						test: /[\\/]store[\\/]/,
+						filename: '[chunkhash:8].js',
+						reuseExistingChunk: true,
+						minSize: 10000,
+						maxSize: 100000,
+						// enforce: true,
+					},
 				},
 			},
 

@@ -19,77 +19,98 @@ export interface ICertInfo {
 	successPath: string
 }
 
-let successPath = ''
-let successID: string
-const KEEPING_PATH_VALID: { [key: string]: Array<string> } = {
-	[import.meta.env.ROUTER_COMMENT_NAME]: [import.meta.env.ROUTER_LOGIN_NAME],
-}
+const BeforeEach = (function beforeEach() {
+	let successPath = ''
+	let successID: string = ''
+	let WAITING_VERIFY_ROUTER_NAME_LIST: { [key: string]: Array<string> }
 
-export default (function beforeEach() {
-	const _init = (router: Router) => {
-		router.beforeEach((to, from) => {
-			if (typeof to.meta.protect === 'function') {
-				const navigate: INavigate = {
-					status: 200,
+	const _protectHandler = ({
+		router,
+		to,
+		from,
+	}: { router: Router } & INavigateInfo) => {
+		if (typeof to.meta.protect === 'function') {
+			const navigate: INavigate = {
+				status: 200,
+			}
+
+			const certificateInfo: ICertInfo = {
+				user: UserInfoState as IUserInfo,
+				navigateInfo: {
+					to,
+					from,
+				},
+				successPath,
+			}
+
+			const protectInfo = to.meta.protect(certificateInfo)
+
+			if (!protectInfo) {
+				navigate.status = 301
+				navigate.redirect = -1
+			} else if (typeof protectInfo === 'string') {
+				if (WAITING_VERIFY_ROUTER_NAME_LIST[to.name as string]) {
+					successPath = to.fullPath as string
+					successID = to.name as string
 				}
 
-				// const userInfo = inject(import.meta.env.STORE_KEY_USER)
+				navigate.status = 301
+				navigate.redirect = protectInfo
+			}
 
-				const certificateInfo: ICertInfo = {
-					user: UserInfoState as IUserInfo,
-					navigateInfo: {
-						to,
-						from,
-					},
-					successPath,
+			if (navigate.status !== 200) {
+				const redirect = navigate.redirect || -1
+
+				if (redirect === -1) {
+					router.go(redirect)
+				} else {
+					router.push({
+						path: navigate.redirect as string,
+						replace: navigate.status === 301,
+					})
 				}
 
-				const protectInfo = to.meta.protect(certificateInfo)
+				return false
+			}
 
-				if (!protectInfo) {
-					navigate.status = 301
-					navigate.redirect = -1
-				} else if (typeof protectInfo === 'string') {
-					if (KEEPING_PATH_VALID[to.name as string]) {
-						successPath = to.fullPath as string
-						successID = to.name as string
-					}
-
-					navigate.status = 301
-					navigate.redirect = protectInfo
-				}
-
-				if (navigate.status !== 200) {
-					const redirect = navigate.redirect || -1
-
-					if (redirect === -1) {
-						router.go(redirect)
-					} else {
-						router.push(redirect as string)
-					}
-				}
-
+			if (successID) {
 				if (
-					successID &&
-					!KEEPING_PATH_VALID[successID].includes(to.name as string)
+					WAITING_VERIFY_ROUTER_NAME_LIST[successID].includes(to.name as string)
 				) {
+					to.meta.info = {
+						successPath,
+					}
+				} else {
 					successID = ''
 					successPath = ''
 				}
 			}
+		}
+
+		to.meta.successPath = successPath
+		to.meta.reProtect = () => _protectHandler({ router, to, from })
+	} // _protectHandler()
+
+	const _init = (router: Router) => {
+		router.beforeEach((to, from) => {
+			_protectHandler({ router, to, from })
 
 			return true
 		})
 	}
 
 	return {
-		init(router: Router) {
+		init(
+			router: Router,
+			waitingVerifyRouterNameList: { [key: string]: Array<string> }
+		) {
 			try {
 				if (!router) {
 					throw Object.assign(new Error('Missing router parameter!'), {
 						code: 402,
 					})
 				} else {
+					WAITING_VERIFY_ROUTER_NAME_LIST = waitingVerifyRouterNameList
 					_init(router)
 				}
 			} catch (err) {
@@ -98,3 +119,5 @@ export default (function beforeEach() {
 		},
 	}
 })()
+
+export default BeforeEach

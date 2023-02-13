@@ -54,6 +54,10 @@ const WebpackDevelopmentConfiguration = async () => {
 			hot: true,
 			liveReload: false,
 			host: process.env.PROJECT_IPV4_HOST,
+			client: {
+				overlay: false,
+				logging: 'warn', // Want to set this to 'warn' or 'error'
+			}, // NOTE - Use overlay of react refresh plugin
 			devMiddleware: { publicPath: '/', writeToDisk: true },
 			historyApiFallback: true,
 		},
@@ -175,7 +179,7 @@ const WebpackDevelopmentConfiguration = async () => {
 		},
 
 		optimization: {
-			runtimeChunk: true,
+			runtimeChunk: false,
 			removeAvailableModules: false,
 			removeEmptyChunks: false,
 			splitChunks: false,
@@ -183,14 +187,7 @@ const WebpackDevelopmentConfiguration = async () => {
 			providedExports: false,
 		},
 		experiments: {
-			lazyCompilation: {
-				imports: true,
-				entries: true,
-				test: (module) =>
-					!/[\\/](node_modules|src\/(utils|config|assets))[\\/]/.test(
-						module.nameForCondition()
-					),
-			},
+			lazyCompilation: true,
 			layers: true,
 			cacheUnaffected: true,
 		},

@@ -22,7 +22,7 @@ module.exports = {
 		'plugin:import/warnings',
 		'prettier',
 	],
-	plugins: ['@typescript-eslint'],
+	plugins: ['@typescript-eslint/eslint-plugin'],
 	parserOptions: {
 		ecmaFeatures: {
 			jsx: true,
@@ -30,6 +30,7 @@ module.exports = {
 		},
 		ecmaVersion: 'latest',
 		sourceType: 'module',
+		allowImportExportEverywhere: true,
 		project: './tsconfig.json',
 	},
 	rules: {

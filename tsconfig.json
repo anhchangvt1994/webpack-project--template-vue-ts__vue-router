@@ -39,7 +39,8 @@
 			"config/*": ["config/*"],
 			"pages/*": ["pages/*"],
 			"components/*": ["components/*"],
-			"utils/*": ["utils/*"]
+			"utils/*": ["utils/*"],
+			"store/*": ["store/*"]
 		},
 
 		// NOTE - Tell typescript compile just only check type

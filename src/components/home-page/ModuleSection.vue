@@ -64,7 +64,6 @@
 		.image-item__outer {
 			border-radius: 8px;
 			border: 1px solid $dark-color;
-			background-color: $white-color;
 		}
 
 		&__title {

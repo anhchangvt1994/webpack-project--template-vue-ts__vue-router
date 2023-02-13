@@ -8,3 +8,14 @@ declare module '*.vue' {
 	>
 	export default component
 }
+
+// router declare
+import type { ICertInfo } from 'config/router/utils/BeforeEachHandler'
+import 'vue-router'
+
+declare module 'vue-router' {
+	interface RouteMeta {
+		protect?: (certInfo?: ICertInfo) => boolean | string | void
+		reProtect?: () => void
+	}
+}

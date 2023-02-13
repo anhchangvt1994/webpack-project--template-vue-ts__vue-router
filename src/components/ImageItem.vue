@@ -28,11 +28,13 @@
 	.image-item__outer {
 		height: 100px;
 		width: 100%;
+		background-color: #b5b3b21a;
 
 		&.--is-error {
-			background: url('/images/icons/image-loading-icon.png') center/24px 24px
-				no-repeat;
-
+			background-image: url('/images/icons/image-loading-icon.png');
+			background-position: center;
+			background-size: 24px 24px;
+			background-repeat: no-repeat;
 			.image-item {
 				display: none;
 			}
@@ -41,7 +43,6 @@
 
 	.image-item {
 		display: block;
-		background-color: #fdfffc;
 		width: 100%;
 		height: 100%;
 		object-fit: contain;

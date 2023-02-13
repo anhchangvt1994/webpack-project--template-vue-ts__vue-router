@@ -3,8 +3,6 @@
 	import CommentSection from 'components/comment-page/CommentSection.vue'
 	const route = useRoute()
 
-	console.log(route.name)
-
 	const commentPageName = import.meta.env.ROUTER_COMMENT_NAME
 
 	const response: {
