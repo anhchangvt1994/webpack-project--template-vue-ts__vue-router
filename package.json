@@ -1,8 +1,8 @@
 {
 	"scripts": {
 		"dev": "cross-env ENV=development PORT=3000 IO_PORT=3030 webpack serve --mode=development",
-		"build": "webpack --mode=production",
-		"build:esm": "cross-env ESM=true webpack --mode=production",
+		"build": "vue-tsc && webpack --mode=production",
+		"build:esm": "vue-tsc && cross-env ESM=true webpack --mode=production",
 		"preview": "cross-env PORT=8080 NODE_NO_WARNINGS=1 node ./config/webpack.serve.config.js",
 		"prettier": "prettier src/**/*.{vue,js,ts}{,x} --no-error-on-unmatched-pattern --check",
 		"lint": "vue-tsc && eslint src/**/*.{vue,js,ts}{,x} --no-error-on-unmatched-pattern --ignore-pattern node_modules/",
