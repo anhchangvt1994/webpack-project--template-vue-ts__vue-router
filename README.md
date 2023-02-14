@@ -257,7 +257,7 @@ Some keywords for researching:
 <h3 id="protect">Protect on route</h3>
 
 You can protect route by using the [meta options and use beforeEach event to execute it](https://router.vuejs.org/guide/advanced/meta.html#route-meta-fields).
-We will make an example in this project. The PRD for protect route's case have some short description.
+We will make an example in this project. The PRD for protect route's case has some short description.
 
 ```markdown
 // PRD - Comment Page
