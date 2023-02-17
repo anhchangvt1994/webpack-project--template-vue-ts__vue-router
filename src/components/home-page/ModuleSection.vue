@@ -4,29 +4,24 @@
 	const moduleList: Array<{
 		title: string
 		id: number
-		isVip: boolean
 	}> = [
 		{
 			title: 'Excepteur nostrud deserunt do ipsum eu dolore.',
 			id: 1,
-			isVip: false,
 		},
 		{
 			title:
 				'Ex Lorem commodo nisi et qui adipisicing consectetur magna duis enim pariatur eu.',
 			id: 2,
-			isVip: false,
 		},
 		{
 			title: 'Dolor in voluptate anim magna.',
 			id: 3,
-			isVip: false,
 		},
 		{
 			title:
 				'Eiusmod exercitation sint adipisicing magna sit dolore adipisicing.',
 			id: 4,
-			isVip: true,
 		},
 	]
 </script>

@@ -20,8 +20,8 @@ export interface ICertInfo {
 }
 
 const BeforeEach = (function beforeEach() {
-	let successPath = ''
-	let successID: string = ''
+	let successPath: string
+	let successID: string
 	let WAITING_VERIFY_ROUTER_NAME_LIST: { [key: string]: Array<string> }
 
 	const _protectHandler = ({

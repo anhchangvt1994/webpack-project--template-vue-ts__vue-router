@@ -317,7 +317,8 @@ I handled for you executing **protect()** in this project, so you just only focu
        *    successPath: string
        * }
        */
-      if(!certInfo || !certInfo.email) return import.meta.env.ROUTER_LOGIN_PATH
+      const userInfo = certInfo?.user
+      if(!userInfo || !userInfo.email) return import.meta.env.ROUTER_LOGIN_PATH
       return true
     }
   }

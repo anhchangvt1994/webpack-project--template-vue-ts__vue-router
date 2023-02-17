@@ -106,7 +106,8 @@ const WebpackDevelopmentConfiguration = async () => {
 			RecompileLoadingScreenInitial,
 			new HtmlWebpackPlugin({
 				title: 'webpack project for vue',
-				template: 'index.development.html',
+				// template: './config/templates/index.development.pacman-loading.html',
+				template: './config/templates/index.development.image-loading.html',
 				inject: 'body',
 				templateParameters: {
 					env: process.env.ENV,
@@ -158,12 +159,32 @@ const WebpackDevelopmentConfiguration = async () => {
 				__VUE_OPTIONS_API__: true,
 				__VUE_PROD_DEVTOOLS__: false,
 			}),
-			new webpack.ProgressPlugin(function (percentage) {
-				if (!_socket) {
-					return
-				}
+			new webpack.ProgressPlugin({
+				// NOTE - https://webpack.js.org/plugins/progress-plugin/#usage
+				percentBy: 'entries',
+				handler: (() => {
+					// NOTE - At the first time, system will compile 3 process instead 1
+					let totalProcess = 3
+					let tmpTotalPercentage = 0
+					let totalPercentage = 0
 
-				_socket.emit('updateProgressPercentage', Math.ceil(percentage * 100))
+					return function (percentage) {
+						if (!_socket) {
+							return
+						}
+
+						if (percentage === 0) tmpTotalPercentage = totalPercentage
+
+						if (tmpTotalPercentage < 100) {
+							totalPercentage =
+								tmpTotalPercentage + Math.ceil(percentage * 100) / totalProcess
+						} else {
+							totalPercentage = Math.ceil(percentage * 100)
+						}
+
+						_socket.emit('updateProgressPercentage', totalPercentage)
+					}
+				})(),
 			}),
 		].filter(Boolean),
 
