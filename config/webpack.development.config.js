@@ -165,6 +165,7 @@ const WebpackDevelopmentConfiguration = async () => {
 				handler: (() => {
 					// NOTE - At the first time, system will compile 3 process instead 1
 					let totalProcess = 3
+					let tmpTotalPercentagePerTotalProcess = 0
 					let tmpTotalPercentage = 0
 					let totalPercentage = 0
 
@@ -173,14 +174,19 @@ const WebpackDevelopmentConfiguration = async () => {
 							return
 						}
 
-						if (percentage === 0) tmpTotalPercentage = totalPercentage
+						if (percentage === 0)
+							tmpTotalPercentagePerTotalProcess = totalPercentage
 
-						if (tmpTotalPercentage < 100) {
-							totalPercentage =
-								tmpTotalPercentage + Math.ceil(percentage * 100) / totalProcess
-						} else {
-							totalPercentage = Math.ceil(percentage * 100)
-						}
+						tmpTotalPercentage =
+							tmpTotalPercentagePerTotalProcess < 100
+								? tmpTotalPercentagePerTotalProcess +
+								  Math.ceil(percentage * 100) / totalProcess
+								: Math.ceil(percentage * 100)
+
+						totalPercentage =
+							tmpTotalPercentage > totalPercentage || tmpTotalPercentage === 0
+								? tmpTotalPercentage
+								: totalPercentage + 0.5
 
 						_socket.emit('updateProgressPercentage', totalPercentage)
 					}

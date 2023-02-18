@@ -44,7 +44,7 @@ module.exports = (async () => {
 									{
 										bugfixes: true,
 										useBuiltIns: 'entry',
-										corejs: '3.26.1',
+										corejs: 3,
 									},
 								],
 								'babel-preset-typescript-vue3',
