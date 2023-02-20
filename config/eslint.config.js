@@ -50,7 +50,13 @@ module.exports = {
 		],
 		'@typescript-eslint/naming-convention': 'off',
 		'no-unused-vars': 'warn',
-		'vue/multi-word-component-names': 'warn',
+		'vue/multi-word-component-names': 'off',
+		'vue/no-undef-components': [
+			'error',
+			{
+				ignorePatterns: ['router(\\-\\w+)+'],
+			},
+		],
 	},
 	settings: {
 		'import/resolver': {
