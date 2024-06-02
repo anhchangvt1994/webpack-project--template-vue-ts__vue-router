@@ -1,6 +1,6 @@
-import type { Router, RouteLocationNormalized } from 'vue-router'
 import type { IUserInfo } from 'store/UserStore'
 import { UserInfoState } from 'store/UserStore'
+import type { RouteLocationNormalized, Router } from 'vue-router'
 
 interface INavigate {
 	error?: string
@@ -19,13 +19,17 @@ export interface ICertInfo {
 	successPath: string
 }
 
+const VALID_CODE_LIST = [200]
+const REDIRECT_CODE_LIST = [301, 302]
+const ERROR_CODE_LIST = [404, 500, 502, 504]
+
 const BeforeEach = (function beforeEach() {
 	let successPath: string
 	let successID: string
 	let WAITING_VERIFY_ROUTER_NAME_LIST: { [key: string]: Array<string> }
 
 	const _init = (router: Router) => {
-		router.beforeEach((to, from) => {
+		router.beforeEach(async (to, from) => {
 			if (typeof to.meta.protect === 'function') {
 				const protect = to.meta.protect
 				const navigate: INavigate = {
@@ -41,7 +45,7 @@ const BeforeEach = (function beforeEach() {
 					successPath,
 				}
 
-				const checkProtection = () => {
+				const checkProtection = (isReProtect = false) => {
 					const protectInfo = protect(certificateInfo)
 
 					if (!protectInfo) {
@@ -65,7 +69,8 @@ const BeforeEach = (function beforeEach() {
 						} else {
 							router.push({
 								path: navigate.redirect as string,
-								replace: navigate.status === 301,
+								// replace: navigate.status === 301,
+								replace: isReProtect,
 							})
 						}
 
@@ -75,7 +80,7 @@ const BeforeEach = (function beforeEach() {
 					return true
 				}
 
-				to.meta.reProtect = checkProtection
+				to.meta.reProtect = () => checkProtection(true)
 
 				if (!checkProtection()) return false
 			}

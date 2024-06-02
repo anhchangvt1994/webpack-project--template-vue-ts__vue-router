@@ -2,6 +2,7 @@
 	"exclude": [
 		"node_modules",
 		"dist",
+		"server/dist",
 		"package.json",
 		"package-lock.json",
 		"yarn-lock.json"
@@ -12,7 +13,12 @@
 		"src/shim-vue.d.ts",
 		"src/static.d.ts"
 	],
-	"include": ["src/**/*.js", "src/**/*.ts", "src/**/*.vue"],
+	"include": [
+		"src/**/*.js",
+		"src/**/*.ts",
+		"src/**/*.vue",
+		"src/components/RouterLink.tsx"
+	],
 	"compilerOptions": {
 		// NOTE - Set what module will be built for project (es, commonjs) (what is compile way will be chosen for import / export syntax)
 		// https://www.typescriptlang.org/tsconfig#module
@@ -37,9 +43,10 @@
 		"paths": {
 			"@/*": ["../*"],
 			"assets/*": ["assets/*"],
-			"config/*": ["config/*"],
+			"app/*": ["app/*"],
 			"pages/*": ["pages/*"],
 			"components/*": ["components/*"],
+			"composable/*": ["composable/*"],
 			"utils/*": ["utils/*"],
 			"store/*": ["store/*"]
 		},

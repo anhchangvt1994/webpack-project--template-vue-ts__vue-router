@@ -4,18 +4,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>
-    <%= htmlWebpackPlugin.options.title %>
-  </title>
+  <!--seo helper-->
   <% if(env==='development' ) { %>
-    <script src="<%= require('@/config/libs/socket.io.min.js') %>"></script>
-    <script>
+    <script only-dev src="<%= require('@/config/libs/socket.io.min.js') %>"></script>
+    <script only-dev>
       globalThis.__VUE_OPTIONS_API__ = <%= __VUE_OPTIONS_API__ || true %>;
       globalThis.__VUE_PROD_DEVTOOLS__ = <%= __VUE_PROD_DEVTOOLS__ || false %>;
     </script>
     <% } %>
       <% if(env==='development') { %>
-        <style>
+        <style only-dev>
           /* Pacman style region */
           .compilation-loading-screen {
             position: fixed;
@@ -154,9 +152,9 @@
 <body>
   <div id="root"></div>
   <% if(env==='development' ) { %>
-    <div id="compilation-loading__screen" class="compilation-loading-screen">
-      <div class="compilation-loading-screen__inner">
-        <div class="compilation-loading-screen__image-outer">
+    <div only-dev id="compilation-loading__screen" class="compilation-loading-screen">
+      <div only-dev class="compilation-loading-screen__inner">
+        <div only-dev class="compilation-loading-screen__image-outer">
           <img class="compilation-loading-screen__image --is-show" src="/images/development/png/kunfu_panda/01.png" alt="loading screen" />
           <img class="compilation-loading-screen__image --is-hidden" src="/images/development/png/kunfu_panda/02.png" alt="loading screen" />
           <img class="compilation-loading-screen__image --is-hidden" src="/images/development/png/kunfu_panda/03.png" alt="loading screen" />
@@ -165,11 +163,11 @@
         </div>
         <!-- .compilation-loading-screen__image-outer -->
 
-        <div class="compilation-loading-screen__progress-wrapper">
-          <div class="compilation-loading-screen__progress-bar compilation-loading-screen__progress-bar--width"
+        <div only-dev class="compilation-loading-screen__progress-wrapper">
+          <div only-dev class="compilation-loading-screen__progress-bar compilation-loading-screen__progress-bar--width"
             style="width: 0">
-            <div class="compilation-loading-screen__progress-bar--anim">
-              <div class="compilation-loading-screen__progress-bar--milestones">
+            <div only-dev class="compilation-loading-screen__progress-bar--anim">
+              <div only-dev class="compilation-loading-screen__progress-bar--milestones">
                 <img width="50" style="max-width: none" src="/images/development/webp/kungfu-panda.webp" alt="">
               </div>
             </div>
@@ -181,7 +179,7 @@
     </div>
     <% } %>
       <% if(env==='development' ) { %>
-        <script>
+        <script only-dev>
           let isFirstCompiling = true
 
           const _setupLoadingScreenImage = () => {
@@ -248,6 +246,7 @@
             });
 
             socket.on('connect', function () {
+              socket.on("hardReload", () => window.history.go(0))
               const elRoot = document.getElementById('root');
               const elLoadingScreen = document.getElementById("compilation-loading__screen");
               const elProgressBarWidth = elLoadingScreen?.querySelector?.(".compilation-loading-screen__progress-bar--width") ?? null;

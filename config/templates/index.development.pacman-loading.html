@@ -4,18 +4,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <!--seo helper-->
   <title>
     <%= htmlWebpackPlugin.options.title %>
   </title>
   <% if(env==='development' ) { %>
-    <script src="<%= require('@/config/libs/socket.io.min.js') %>"></script>
-    <script>
+    <script only-dev src="<%= require('@/config/libs/socket.io.min.js') %>"></script>
+    <script only-dev>
       globalThis.__VUE_OPTIONS_API__ = <%= __VUE_OPTIONS_API__ || true %>;
       globalThis.__VUE_PROD_DEVTOOLS__ = <%= __VUE_PROD_DEVTOOLS__ || false %>;
     </script>
     <% } %>
       <% if(env==='development' ) { %>
-        <style>
+        <style only-dev>
           /* Pacman style region */
           .compilation-loading-screen {
             position: fixed;
@@ -524,7 +525,7 @@
     </div>
     <% } %>
       <% if(env==='development' ) { %>
-        <script>
+        <script only-dev>
           (function () {
             if (!window.io) return;
 
@@ -537,6 +538,7 @@
             });
 
             socket.on('connect', function () {
+              socket.on("hardReload", () => window.reload())
               const elRoot = document.getElementById('root');
               const elLoadingScreen = document.getElementById("compilation-loading__screen");
               const elProgressBarWidth = elLoadingScreen?.querySelector?.(".compilation-loading-screen__progress-bar--width") ?? null;

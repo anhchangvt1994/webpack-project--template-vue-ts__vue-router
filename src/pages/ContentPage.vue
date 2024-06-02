@@ -1,9 +1,10 @@
 <script setup lang="ts">
 	import ModuleContentSection from 'components/content-page/ModuleContentSection.vue'
 	import CommentSection from 'components/comment-page/CommentSection.vue'
+
 	const route = useRoute()
 
-	const commentPageName = import.meta.env.ROUTER_COMMENT_NAME
+	const { ROUTER_COMMENT_NAME } = import.meta.env
 
 	const response: {
 		[key: string | number]: {
@@ -42,7 +43,7 @@
 </script>
 
 <template>
-	<div v-if="route.name !== commentPageName" class="content-page">
+	<div v-if="route.name !== ROUTER_COMMENT_NAME" class="content-page">
 		<div>
 			<router-link
 				:to="{
@@ -53,21 +54,13 @@
 		</div>
 		<ModuleContentSection :caption="data.title" :content="data.content" />
 		<router-link
-			v-slot="{ isActive, href, navigate }"
+			class="comment-extension-label"
 			:to="{
 				name: 'ContentComment',
 				params: route.params,
 			}"
-			custom
 		>
-			<a
-				:href="href"
-				class="comment-extension-label"
-				:class="isActive ? '--is-active' : ''"
-				@click="navigate"
-			>
-				View Comment
-			</a>
+			View Comment
 		</router-link>
 		<router-view v-slot="{ Component }">
 			<CommentSection>

@@ -5,31 +5,30 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { DefinePlugin } = require('webpack')
 const {
 	WebpackCustomizeDefinePlugin,
-} = require('./plugins/WebpackCustomizeDefinePlugin.js')
-const { IPV4_ADDRESS } = require('./libs/network-ipv4-generator.js')
+} = require('./utils/WebpackCustomizeDefinePlugin.js')
+const { IPV4_ADDRESS } = require('./utils/NetworkGenerator.js')
+const { getPort, findFreePort } = require('./utils/PortHandler/index.js')
 
-const PROJECT_PATH = __dirname.replace(/\\/g, '/')
-
-// NOTE - Setup process.env for address and host
-if (process.env) {
-	process.env.LOCAL_ADDRESS = 'localhost'
-	process.env.IPV4_ADDRESS = IPV4_ADDRESS || process.env.LOCAL_ADDRESS
-	process.env.LOCAL_HOST = `localhost:${process.env.PORT || 3000}`
-	process.env.IPV4_HOST = `${process.env.IPV4_ADDRESS}:${
-		process.env.PORT || 3000
-	}`
-	process.env.IO_HOST = `${process.env.IPV4_ADDRESS}:${
-		process.env.IO_PORT || 3030
-	}`
-}
-// end setup
-
-const ioInitial = require('./server/io.js')
-
-const port = process.env.PORT || 3000
+const SocketInitial = require('./utils/SocketHandler.js')
 let _socket = null
 
 const WebpackDevelopmentConfiguration = async () => {
+	const PROJECT_PATH = __dirname.replace(/\\/g, '/')
+	const WEBPACK_DEV_SERVER_PORT = await findFreePort(3000)
+	const SOCKET_IO_PORT = getPort('SOCKET_IO_PORT')
+
+	// NOTE - Setup process.env for address and host
+	if (process.env) {
+		process.env.LOCAL_ADDRESS = 'localhost'
+		process.env.IPV4_ADDRESS = IPV4_ADDRESS || process.env.LOCAL_ADDRESS
+		process.env.LOCAL_HOST = `localhost:${WEBPACK_DEV_SERVER_PORT}`
+		process.env.IPV4_HOST = `${process.env.IPV4_ADDRESS}:${WEBPACK_DEV_SERVER_PORT}`
+		process.env.IO_HOST = `${process.env.IPV4_ADDRESS}:${SOCKET_IO_PORT}`
+	}
+	// end setup
+
+	const port = WEBPACK_DEV_SERVER_PORT
+
 	await initENVHandler()
 
 	return {
@@ -43,6 +42,7 @@ const WebpackDevelopmentConfiguration = async () => {
 			},
 		},
 		// devtool: 'inline-source-map', // NOTE - BAD Performance, GOOD debugging
+		// devtool: 'eval-source-map', // NOTE - BAD Performance, GOOD debugging
 		// devtool: 'eval-cheap-module-source-map', // NOTE - SLOW Performance, GOOD debugging
 		// devtool: 'eval', // NOTE - GOOD Performance, BAD debugging
 		devtool: 'eval-cheap-source-map',
@@ -50,7 +50,7 @@ const WebpackDevelopmentConfiguration = async () => {
 			compress: true,
 			port,
 			static: './dist',
-			watchFiles: ['src/**/*', 'config/index.html'],
+			watchFiles: ['src/**/*', 'config/templates/index.*.html'],
 			hot: true,
 			liveReload: false,
 			host: process.env.PROJECT_IPV4_HOST,
@@ -58,40 +58,39 @@ const WebpackDevelopmentConfiguration = async () => {
 				overlay: false,
 				logging: 'warn', // Want to set this to 'warn' or 'error'
 			},
-			devMiddleware: { publicPath: '/', writeToDisk: true },
 			historyApiFallback: true,
 		},
 		module: {
 			rules: [
-				{
-					test: /.(jsx|tsx|js|ts)$/,
-					exclude: /(node_modules)/,
-					use: {
-						loader: 'swc-loader',
-						options: {
-							jsc: {
-								parser: {
-									syntax: 'typescript',
-									tsx: true,
-									decorators: false,
-									dynamicImport: true,
-								},
-								target: 'esnext',
-							},
-						},
-					},
-				},
 				// {
-				// 	test: /\.(js|ts)$/,
+				// 	test: /.(jsx|tsx|js|ts)$/,
+				// 	exclude: /(node_modules)/,
 				// 	use: {
-				// 		loader: 'esbuild-loader',
+				// 		loader: 'swc-loader',
 				// 		options: {
-				// 			loader: 'ts',
-				// 			target: 'esnext',
+				// 			jsc: {
+				// 				parser: {
+				// 					syntax: 'typescript',
+				// 					tsx: true,
+				// 					decorators: false,
+				// 					dynamicImport: true,
+				// 				},
+				// 				target: 'esnext',
+				// 			},
 				// 		},
 				// 	},
-				// 	exclude: /node_modules/,
 				// },
+				{
+					test: /\.(js|ts)$/,
+					use: {
+						loader: 'esbuild-loader',
+						options: {
+							loader: 'ts',
+							target: 'esnext',
+						},
+					},
+					exclude: /node_modules|dist/,
+				},
 				{
 					test: /libs[\\/]socket.io.min.js/,
 					type: 'asset/resource',
@@ -188,7 +187,7 @@ const WebpackDevelopmentConfiguration = async () => {
 								? tmpTotalPercentage
 								: totalPercentage + 0.5
 
-						_socket.emit('updateProgressPercentage', totalPercentage)
+						_socket?.emit('updateProgressPercentage', totalPercentage)
 					}
 				})(),
 			}),
@@ -239,10 +238,14 @@ class RecompileLoadingScreen {
 
 	async _setupSocketConnection() {
 		const self = this
-		await ioInitial.then(function (data) {
+		await SocketInitial.then(function (data) {
 			_socket = data?.socket
 			data?.setupCallback?.(self._setupSocketReconnection.bind(self))
 		})
+	}
+
+	_hardReload() {
+		_socket?.emit('hardReload')
 	}
 
 	_setupSocketReconnection(data) {
@@ -257,11 +260,11 @@ class RecompileLoadingScreen {
 
 	_setTimeoutTurnOnProcessingWithDuration(duration) {
 		if (!duration) {
-			_socket.emit('turnOnLoadingScreen')
+			_socket?.emit('turnOnLoadingScreen')
 		} else {
 			const self = this
 			self._socketEmitTurnOnLoadingScreenTimeout = setTimeout(function () {
-				_socket.emit('turnOnLoadingScreen')
+				_socket?.emit('turnOnLoadingScreen')
 				clearTimeout(self._socketEmitTurnOnLoadingScreenTimeout)
 			}, duration)
 		}
@@ -274,11 +277,11 @@ class RecompileLoadingScreen {
 
 	_setTimeoutTurnOffProcessingWithDuration(duration) {
 		if (!duration) {
-			_socket.emit('turnOffLoadingScreen')
+			_socket?.emit('turnOffLoadingScreen')
 		} else {
 			const self = this
 			self._socketEmitTurnOffLoadingScreenTimeout = setTimeout(function () {
-				_socket.emit('turnOffLoadingScreen')
+				_socket?.emit('turnOffLoadingScreen')
 				clearTimeout(self._socketEmitTurnOffLoadingScreenTimeout)
 			}, duration)
 		}
@@ -326,20 +329,48 @@ const initENVHandler = async () => {
 		if (!data) return
 
 		return await data.promiseENVWriteFileSync.then(function () {
-			const nodemon = require('nodemon')
+			const chokidar = require('chokidar')
+			const { exec } = require('child_process')
 
-			nodemon({
-				script: './config/types/dts-generator.mjs',
-				stdout: false,
-				quiet: true,
-				watch: './env/env*.mjs',
-				runOnChangeOnly: true,
-			})
+			const envWatcher = chokidar.watch('./env/env*.mjs', {
+				ignored: /$^/,
+				persistent: true,
+			}) // /$^/ is match nothing
 
-			nodemon.on('restart', function () {
+			envWatcher.on('change', function () {
+				exec('node ./config/types/dts-generator.mjs', () => {})
+
 				RecompileLoadingScreenInitial._setTimeoutTurnOnProcessingWithDuration(
 					10
 				)
+			})
+
+			const serverPuppeteerSSRWatcher = chokidar.watch(
+				['./server/utils/**/*.ts', './server/puppeteer-ssr/**/*.ts'],
+				{
+					ignored: /$^/,
+					persistent: true,
+				}
+			) // /$^/ is match nothing
+
+			serverPuppeteerSSRWatcher.on('change', function () {
+				RecompileLoadingScreenInitial._setTimeoutTurnOnProcessingWithDuration()
+				let totalDuration = 1
+				const interval = setInterval(() => {
+					const percentage = Math.ceil((totalDuration * 100) / 8000)
+					_socket?.emit(
+						'updateProgressPercentage',
+						percentage > 30 ? percentage : 30 + percentage
+					)
+
+					if (totalDuration >= 8000) {
+						clearInterval(interval)
+						_socket?.emit('hardReload')
+						return
+					}
+
+					totalDuration += 1
+				})
 			})
 		})
 	})

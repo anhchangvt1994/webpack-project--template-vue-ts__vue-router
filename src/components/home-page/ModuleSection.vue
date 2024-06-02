@@ -1,5 +1,4 @@
 <script setup lang="ts">
-	import { getSlug } from 'utils/SlugHandler'
 	import ImageItem from 'components/ImageItem.vue'
 	const moduleList: Array<{
 		title: string
@@ -29,6 +28,9 @@
 <template>
 	<section class="module-section">
 		<div class="grid grid-cols-3 gap-16">
+			<input type="button" value="click input" />
+			<button>click button</button>
+			<a>nofollow</a>
 			<router-link
 				v-for="item in moduleList"
 				:key="item.title"
@@ -41,10 +43,7 @@
 				}"
 			>
 				<div class="module-card">
-					<ImageItem src="" :caption="item.title" />
-					<div class="module-card__title">
-						{{ item.title }}
-					</div>
+					<ImageItem src="sadfasdf" :caption="item.title" />
 					<!-- .module-card__title -->
 					<!-- .module-card__image-outer -->
 				</div>

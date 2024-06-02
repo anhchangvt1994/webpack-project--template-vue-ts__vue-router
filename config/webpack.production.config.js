@@ -34,7 +34,7 @@ module.exports = (async () => {
 			rules: [
 				{
 					test: /\.(js|ts)$/,
-					exclude: /node_modules/,
+					exclude: /node_modules|dist/,
 					use: {
 						loader: 'babel-loader',
 						options: {
@@ -51,7 +51,7 @@ module.exports = (async () => {
 								'@babel/preset-typescript',
 							],
 							plugins: [
-								['@babel/plugin-proposal-class-properties', { loose: false }],
+								['@babel/plugin-transform-class-properties', { loose: false }],
 							],
 						},
 					},
@@ -60,16 +60,18 @@ module.exports = (async () => {
 		},
 		plugins: [
 			new PurgeCSSPlugin({
-				paths: glob.sync(`./src/**/*`, { nodir: true }),
+				paths: ['./index.production.html'].concat(
+					glob.sync('./src/**/*', { nodir: true })
+				),
 			}),
 			new HtmlWebpackPlugin({
 				title: 'webpack project for vue',
 				template: 'index.production.html',
 				inject: 'body',
-				templateParameters: {
-					env: process.env.ENV,
-					ioHost: JSON.stringify(process.env.IO_HOST),
-				},
+				// templateParameters: {
+				// 	env: process.env.ENV,
+				// 	ioHost: JSON.stringify(process.env.IO_HOST),
+				// },
 				scriptLoading: process.env.ESM ? 'module' : 'defer',
 				minify: {
 					collapseWhitespace: true,
@@ -82,6 +84,10 @@ module.exports = (async () => {
 			}),
 			new DefinePlugin({
 				'import.meta.env': ENV_OBJ_WITH_JSON_STRINGIFY_VALUE,
+			}),
+			new DefinePlugin({
+				__VUE_OPTIONS_API__: true,
+				__VUE_PROD_DEVTOOLS__: false,
 			}),
 		],
 		stats: {
@@ -135,9 +141,18 @@ module.exports = (async () => {
 						maxSize: 100000,
 						// enforce: true,
 					},
-					config: {
+					app: {
 						chunks: 'all',
-						test: /[\\/]config[\\/]/,
+						test: /[\\/]app[\\/]/,
+						filename: '[chunkhash:8].js',
+						reuseExistingChunk: true,
+						minSize: 10000,
+						maxSize: 100000,
+						// enforce: true,
+					},
+					composable: {
+						chunks: 'all',
+						test: /[\\/]composable[\\/]/,
 						filename: '[chunkhash:8].js',
 						reuseExistingChunk: true,
 						minSize: 10000,
