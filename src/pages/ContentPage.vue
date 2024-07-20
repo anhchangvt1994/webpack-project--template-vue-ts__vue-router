@@ -47,7 +47,7 @@
 		<div>
 			<router-link
 				:to="{
-					name: 'HomePage',
+					name: ROUTER_HOME_NAME,
 				}"
 				>Back to HomePage</router-link
 			>
@@ -56,7 +56,7 @@
 		<router-link
 			class="comment-extension-label"
 			:to="{
-				name: 'ContentComment',
+				name: ROUTER_CONTENT_COMMENT_NAME,
 				params: route.params,
 			}"
 		>
