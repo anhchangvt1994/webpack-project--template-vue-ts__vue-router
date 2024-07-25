@@ -6,6 +6,7 @@
 export {}
 declare global {
 	const EffectScope: typeof import('vue')['EffectScope']
+	const GENERAL_GREETING: typeof import('@/config/env/ENV_AUTO_IMPORT.mjs')['GENERAL_GREETING']
 	const ROUTER_BASE_PATH: typeof import('@/config/env/ENV_AUTO_IMPORT.mjs')['ROUTER_BASE_PATH']
 	const ROUTER_COMMENT_NAME: typeof import('@/config/env/ENV_AUTO_IMPORT.mjs')['ROUTER_COMMENT_NAME']
 	const ROUTER_COMMENT_PATH: typeof import('@/config/env/ENV_AUTO_IMPORT.mjs')['ROUTER_COMMENT_PATH']
@@ -116,6 +117,9 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
 	interface ComponentCustomProperties {
 		readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+		readonly GENERAL_GREETING: UnwrapRef<
+			typeof import('@/config/env/ENV_AUTO_IMPORT.mjs')['GENERAL_GREETING']
+		>
 		readonly ROUTER_BASE_PATH: UnwrapRef<
 			typeof import('@/config/env/ENV_AUTO_IMPORT.mjs')['ROUTER_BASE_PATH']
 		>
@@ -279,6 +283,9 @@ declare module 'vue' {
 declare module '@vue/runtime-core' {
 	interface ComponentCustomProperties {
 		readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+		readonly GENERAL_GREETING: UnwrapRef<
+			typeof import('@/config/env/ENV_AUTO_IMPORT.mjs')['GENERAL_GREETING']
+		>
 		readonly ROUTER_BASE_PATH: UnwrapRef<
 			typeof import('@/config/env/ENV_AUTO_IMPORT.mjs')['ROUTER_BASE_PATH']
 		>
